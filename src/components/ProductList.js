@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { addBasket } from '../redux/ProductSlice'
 import {
-    Button, Grid, Paper, CardMedia, Typography, CardActions, CardContent,
-    InputLabel, FormControl, MenuItem, Select, Rating, Stack
+    Button, Grid, Paper, Typography, CardActions, CardContent,
+    InputLabel, FormControl, MenuItem, Select, Rating
 } from '@mui/material';
 import { useDispatch } from 'react-redux'
+import TuneIcon from '@mui/icons-material/Tune';
+import IconButton from '@mui/material/IconButton';
 
 const ProductList = () => {
 
@@ -55,27 +57,26 @@ const ProductList = () => {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <h2>Ürünler</h2>
-                </div>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-label">Kategori Seçin</InputLabel>
+            <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center', marginTop: "80px", marginRight: "150px" }}>
+                <FormControl variant="standard" sx={{ m: 2, minWidth: 200 }}>
+                    <InputLabel id="demo-simple-select-label">Kategori</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={category}
                         label="Kategori Seçin"
-                        onChange={event => handleChange(event, "Tümü")}
+                        onChange={event => handleChange(event, "All")}
                     >
-                        <MenuItem value={1}>Tümü</MenuItem>
+                        <MenuItem value={1}>All</MenuItem>
                         <MenuItem value={2}>men's clothing</MenuItem>
                         <MenuItem value={3}>jewelery</MenuItem>
                         <MenuItem value={4}>electronics</MenuItem>
                         <MenuItem value={5}>women's clothing</MenuItem>
                     </Select>
                 </FormControl>
-                <Button variant="outlined" onClick={() => searchCategory(category)}>Search</Button>
+                <IconButton aria-label="Tune" onClick={() => searchCategory(category)}>
+                    <TuneIcon />
+                </IconButton>
             </div>
             <Grid sx={{ flexGrow: 1 }} container spacing={2}>
                 <Grid item xs={12}>
@@ -83,43 +84,34 @@ const ProductList = () => {
                         {productData.map((item, index) => (
                             <Grid key={index} item>
                                 <Paper elevation={10} sx={{
-                                    background: "#EBE0D0",
-                                    maxWidth: 345, height: "100%"
+                                    background: "#fff",
+                                    maxWidth: 345, width: 300, height: "100%",
+                                    display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                                 }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Category: {item.category}
-                                    </Typography>
-                                    <CardMedia
-                                        component="img"
-                                        alt=""
-                                        height="400"
-                                        width="180"
-                                        image={item.image}
-                                    />
+                                    <img src={item.image} alt='' style={{ objectFit: "contain", maxHeight: "100px", width: "100%" }}></img>
                                     <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
+                                        <Typography gutterBottom variant="h6" component="div">
                                             {item.title}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {item.description}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h6" component="div">
+                                        <Typography gutterBottom variant="h6" component="div" style={{ color: "#DF362D", marginTop: '10px' }}>
                                             {item.price} ₺
                                         </Typography>
                                     </CardContent>
-                                    <span>Stok adedi: {item.rating.count}</span>
-                                    <Stack spacing={1}>
-                                    <Rating name="half-rating-read" defaultValue={item.rating.rate} precision={0.5} readOnly />
-    </Stack>
                                     <CardActions>
-                                        <div className='align-right'>
+                                        <Typography gutterBottom variant="h7" component="div" style={{ marginLeft: '10px', marginRight: '10px' }}>
+                                            {item.rating.rate}
+                                        </Typography>
+                                        <Rating name="half-rating-read" defaultValue={item.rating.rate} precision={0.5} readOnly />
+                                    </CardActions>
+                                    <CardContent>
+                                        <div>
                                             <Button style={{
-                                                background: "#EC8FD0",
+                                                background: "#DF362D",
                                             }} size="small" variant="contained"
                                                 onClick={() => dispatch(addBasket(item))}
                                             >Sepete Ekle</Button>
                                         </div>
-                                    </CardActions>
+                                    </CardContent>
                                 </Paper>
                             </Grid>
                         ))}

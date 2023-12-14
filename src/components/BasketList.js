@@ -21,7 +21,7 @@ const BasketList = () => {
                 <h2>Sepetim</h2>
             </div>
             <TableContainer component={Paper}>
-                <Table sx={{ maxWidth: 1050, margin: 'auto' }} size="small" aria-label="a dense table">
+                <Table sx={{ maxWidth: 1100, margin: 'auto' }} size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">Ürün</TableCell>
