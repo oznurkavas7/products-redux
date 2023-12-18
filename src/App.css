@@ -37,15 +37,6 @@
   }
 }
 
-.myButtonHeader {
-  display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-}
-
 .appBarColor {
   background-color: #B7AC44 !important;
-  position: sticky;
-  display: flex;
-  justify-content: left;
-  align-items: left;
 }

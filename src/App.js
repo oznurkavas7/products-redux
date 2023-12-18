@@ -10,7 +10,6 @@ function App() {
       <Router>
       <Header></Header>
         <Routes>
-          <Route path="/" element={<ProductList/>}></Route>
           <Route path="/products" element={<ProductList />}></Route>
           <Route path="/basket" element={<BasketList />}></Route>
       </Routes>

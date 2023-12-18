@@ -1,116 +1,81 @@
-import React, { useEffect, useState } from "react";
-import { addBasket } from '../redux/ProductSlice'
+import React, { useEffect } from "react";
+import { addBasket, getProductApi, closeAlert } from '../redux/ProductSlice'
 import {
-    Button, Grid, Paper, Typography, CardActions, CardContent,
-    InputLabel, FormControl, MenuItem, Select, Rating
+    Button, Grid, Paper, Typography, Dialog, DialogActions, DialogContent,
+    CardContent, Rating, Alert, Snackbar, Stack, CardActionArea, DialogTitle, Box
 } from '@mui/material';
-import { useDispatch } from 'react-redux'
-import TuneIcon from '@mui/icons-material/Tune';
+import { useDispatch, useSelector } from 'react-redux'
+import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/material/styles';
+import StarIcon from '@mui/icons-material/Star';
+
 
 const ProductList = () => {
+    const { productList, basket, showAlert } = useSelector(state => state.product);
+    const [open, setOpen] = React.useState(null);
+    const handleOpen = (item) => setOpen(item);
+    const handleClose = () => setOpen(null);
 
     const dispatch = useDispatch()
 
-    const [productData, setProductData] = useState([]);
-    const [category, setCategory] = React.useState('1');
-
-    const handleChange = (event) => {
-        setCategory(event.target.value);
-    };
-
-    const getProductList = async () => {
-        fetch('https://fakestoreapi.com/products')
-            .then(res => res.json())
-            .then(json => setProductData(json))
-    }
-
     useEffect(() => {
-        getProductList();
+        dispatch((getProductApi()))
     }, []);
 
-    async function searchCategory(value) {
-        let searchVal
-        if (value === 2) {
-            searchVal = 'mensClothing'
-        }
-        else if (value === 3) {
-            searchVal = 'jewelery'
-        }
-        else if (value === 4) {
-            searchVal = 'electronics'
-        }
-        else if (value === 5) {
-            searchVal = 'womensClothing'
-        }
-        else if (value === 1) {
-            getProductList();
-        }
-        if (searchVal) {
-            fetch(`https://fakestoreapi.com/products/category/${searchVal} `)
-                .then(res => res.json())
-                .then(json => {
-                    setProductData(json)
-                })
-        }
-    }
+    const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+        '& .MuiDialogContent-root': {
+            padding: theme.spacing(2),
+        },
+        '& .MuiDialogActions-root': {
+            padding: theme.spacing(1),
+        },
+    }));
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center', marginTop: "80px", marginRight: "150px" }}>
-                <FormControl variant="standard" sx={{ m: 2, minWidth: 200 }}>
-                    <InputLabel id="demo-simple-select-label">Kategori</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={category}
-                        label="Kategori Seçin"
-                        onChange={event => handleChange(event, "All")}
-                    >
-                        <MenuItem value={1}>All</MenuItem>
-                        <MenuItem value={2}>men's clothing</MenuItem>
-                        <MenuItem value={3}>jewelery</MenuItem>
-                        <MenuItem value={4}>electronics</MenuItem>
-                        <MenuItem value={5}>women's clothing</MenuItem>
-                    </Select>
-                </FormControl>
-                <IconButton aria-label="Tune" onClick={() => searchCategory(category)}>
-                    <TuneIcon />
-                </IconButton>
-            </div>
             <Grid sx={{ flexGrow: 1 }} container spacing={2}>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" spacing={2}>
-                        {productData.map((item, index) => (
+                        {productList.map((item, index) => (
                             <Grid key={index} item>
                                 <Paper elevation={10} sx={{
                                     background: "#fff",
                                     maxWidth: 345, width: 300, height: "100%",
                                     display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
                                 }}>
-                                    <img src={item.image} alt='' style={{ objectFit: "contain", maxHeight: "100px", width: "100%" }}></img>
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h6" component="div">
-                                            {item.title}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h6" component="div" style={{ color: "#DF362D", marginTop: '10px' }}>
-                                            {item.price} ₺
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Typography gutterBottom variant="h7" component="div" style={{ marginLeft: '10px', marginRight: '10px' }}>
-                                            {item.rating.rate}
-                                        </Typography>
-                                        <Rating name="half-rating-read" defaultValue={item.rating.rate} precision={0.5} readOnly />
-                                    </CardActions>
+                                    {basket?.map((basketList, indexBasket) => (
+                                        <Badge key={indexBasket} badgeContent={basketList.id === item.id ? 'x' + basketList.quantity : null} color="primary">
+                                        </Badge>
+                                    ))}
+                                    <CardActionArea onClick={() => handleOpen(item)}>
+                                        <img src={item.image} alt='' style={{ objectFit: "contain", maxHeight: "100px", width: "100%" }}></img>
+
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h6" component="div">
+                                                {item.title}
+                                            </Typography>
+                                            <Typography gutterBottom variant="h6" component="div" style={{ color: "#DF362D", marginTop: '10px', fontWeight: "bold" }}>
+                                                {item.price} ₺
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
                                     <CardContent>
                                         <div>
                                             <Button style={{
                                                 background: "#DF362D",
                                             }} size="small" variant="contained"
                                                 onClick={() => dispatch(addBasket(item))}
-                                            >Sepete Ekle</Button>
+                                            >Add to Basket</Button>
                                         </div>
+                                        <Stack>
+                                            <Snackbar open={showAlert} autoHideDuration={4000} onClose={() => dispatch(closeAlert())}>
+                                                <Alert onClose={() => dispatch(closeAlert())} severity="success" sx={{ width: '100%' }}>
+                                                    Product added to basket!
+                                                </Alert>
+                                            </Snackbar>
+                                        </Stack>
                                     </CardContent>
                                 </Paper>
                             </Grid>
@@ -118,6 +83,75 @@ const ProductList = () => {
                     </Grid>
                 </Grid>
             </Grid>
+
+            <BootstrapDialog
+                onClose={handleClose}
+                aria-labelledby="customized-dialog-title"
+                open={open !== null}
+                style={{ maxWidth: "1000px", maxHeight: "calc(100% - 30px)", margin: "auto" }}
+            >
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    <Typography> <b>{open?.title}</b></Typography>
+                    <Box
+                        sx={{
+                            width: 200,
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Rating
+                            name="half-rating-read"
+                            value={open?.rating.rate}
+                            readOnly
+                            precision={0.5}
+                            emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                        />
+                        <Box sx={{ ml: 2 }}>{open?.rating.rate}</Box>
+                    </Box>
+                    <Typography> Category: {open?.category}</Typography>
+                </DialogTitle>
+                <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+
+                <DialogContent dividers>
+                    <Grid container spacing={2}>
+                        <Grid item>
+                            <img src={open?.image} alt='' style={{ objectFit: "contain", maxHeight: "100px", width: "100%" }}></img>
+                        </Grid>
+                        <Grid item xs={12} sm container>
+                            <Grid item xs container direction="column" spacing={2}>
+                                <Grid item xs>
+                                    <Typography gutterBottom>
+                                        {open?.description}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Typography gutterBottom variant="h6" component="div" style={{ color: "#DF362D", marginRight: '5px', marginTop: '5px', fontWeight: "bold" }}>
+                        {open?.price} ₺
+                    </Typography> |
+                    <Button style={{ background: "#DF362D", marginLeft: "5px" }} size="small" variant="contained" autoFocus onClick={() => {
+                        dispatch(addBasket(open ?? null));
+                        handleClose();
+                    }}>
+                        Add to Basket
+                    </Button>
+                </DialogActions>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginRight: '5px', marginBottom: '5px' }}>Stock Count: {open?.rating.count} </div>
+            </BootstrapDialog>
         </div>
     )
 }
