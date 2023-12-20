@@ -4,7 +4,11 @@ const initialState = {
   status: false,
   productList: localStorage.getItem('productList') ? JSON.parse(localStorage.getItem('productList')) : [],
   basket: localStorage.getItem('basket') ? JSON.parse(localStorage.getItem('basket')) : [],
-  showAlert: false
+  showAlert: false,
+  openDetail: null,
+  token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
+  tokenStatus: false,
+  userApi: localStorage.getItem('userpage') ? JSON.parse(localStorage.getItem('userpage')) : null,
 }
 
 export const getProductApi = createAsyncThunk(
@@ -15,6 +19,35 @@ export const getProductApi = createAsyncThunk(
     )
     return res
   })
+
+  export const loginOperation = createAsyncThunk(
+    'gets/loginOperation',
+ 
+    async ({ name, pass }) => {
+      const res = await fetch('https://fakestoreapi.com/auth/login',{
+        method:'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: name,
+          password: pass
+    })}).then(
+        (data) => data.json()
+      )
+      return res
+    }
+  );
+
+  export const getUserApi = createAsyncThunk(
+    'gets/getUserApi',
+ 
+    async (thunkAPI) => {
+      const res = await fetch(`https://fakestoreapi.com/users/${5}`).
+      then(
+        (data) => data.json()
+      )
+      return res
+    }
+  );
 
 export const ProductSlice = createSlice({
   name: 'product',
@@ -71,22 +104,46 @@ export const ProductSlice = createSlice({
     },
     closeAlert: (state) => {
       state.showAlert = false
-    }
+    },
+    handleOpen: (state, action) => {
+      state.openDetail = action.payload
+    },
+    handleClose: (state) => {
+      state.openDetail = null
+    },
+    tokenRemove(state, action) {
+      state.token = null
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getProductApi.pending, (state) => {
         state.status = "loading";
       })
+
       .addCase(getProductApi.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.productList = action.payload;
         localStorage.setItem('productList', JSON.stringify(state.productList))
       })
+      .addCase(loginOperation.fulfilled, (state, action) => {
+        state.tokenStatus = true;
+        state.token = action.payload;
+        localStorage.setItem('token', JSON.stringify(state.token))
+      })
+      .addCase(getUserApi.fulfilled, (state, action) => {
+         state.userApi = action.payload;
+
+         localStorage.setItem('userpage', JSON.stringify(state.userApi))
+      })
+
       .addCase(getProductApi.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+      .addCase(loginOperation.rejected, (state, action) => {
+        state.tokenStatus = false;
+      })
   }
 });
 
@@ -113,7 +170,14 @@ export const searchCategory = (param) => (dispatch) => {
   }
 };
 
+export const logOut = (param) => (dispatch) => {
+  localStorage.removeItem("token")
+  dispatch(tokenRemove());
+};
+
+
 // Action creators are generated for each case reducer function
-export const { addBasket, removeBasket, getProductData, selectCard, closeAlert } = ProductSlice.actions
+export const { addBasket, removeBasket, getProductData, 
+  selectCard, closeAlert, handleOpen, handleClose, tokenRemove } = ProductSlice.actions
 
 export default ProductSlice.reducer

@@ -2,85 +2,96 @@ import React from "react";
 import { Link } from 'react-router-dom'
 import Badge from '@mui/material/Badge';
 import {
-    Button, AppBar, Toolbar, Select,
-    Box, FormControl, InputLabel, MenuItem
+    AppBar, Toolbar, Box
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux'
-import IconButton from '@mui/material/IconButton';
-import TuneIcon from '@mui/icons-material/Tune';
-import { searchCategory } from '../redux/ProductSlice'
+import { logOut } from '../redux/ProductSlice'
 import CssBaseline from '@mui/material/CssBaseline';
-import ProductList from './ProductList';
-import { Routes, Route } from "react-router-dom";
+import LogoutIcon from '@mui/icons-material/Logout';
+import IconButton from '@mui/material/IconButton';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LoginIcon from '@mui/icons-material/Login';
+import CategoryIcon from '@mui/icons-material/Category';
+import image1 from "../shop-icon.png";
 
 const Header = () => {
-    const { basket } = useSelector(state => state.product);
+    const { basket, token } = useSelector(state => state.product);
     const dispatch = useDispatch()
-
-    const [category, setCategory] = React.useState('All');
-    const [isBasket, setIsBasket] = React.useState(false);
-
-    const handleChange = (event) => {
-        setCategory(event);
-    };
 
     const totalQuantity = basket.reduce(
         (total, product) => (total += product.quantity), 0
     )
 
-    const commonStyles = {
-        border: 1,
-        borderColor: 'text.primary'
-    };
-    
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar component="nav" className="appBarColor">
                 <Toolbar style={{ justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex' }}>
-                        <Link to={"/products"}><Button
-                            onClick={() => setIsBasket(false)}
-                            style={{
-                                background: "#FF8300"
-                            }} variant="contained">Products</Button></Link>
-                        <Badge badgeContent={totalQuantity} color="primary">
-                            <Link to={"/basket"}><Button
-                                onClick={() => setIsBasket(true)}
-                                style={{
+                        <Link to={"/products"}>
+                            <IconButton aria-label="Add" style={{
+                                fontFamily: 'Open Sans',
+                                background: "#FF8300",
+                            }}  >
+                                <CategoryIcon />
+                            </IconButton>
+                        </Link>
+                        <Badge style={{ display: token !== null ? undefined : "none" }} badgeContent={totalQuantity} color="primary">
+                            <Link to={"/basket"}>
+                                <IconButton aria-label="Add" style={{
+                                    fontFamily: 'Open Sans',
                                     marginLeft: 10,
                                     background: "#FF4500",
-                                }} variant="contained">My Basket</Button></Link>
+                                    display: token === null ? 'none' : undefined
+                                }}  >
+                                    <ShoppingCartIcon />
+                                </IconButton>
+
+                            </Link>
                         </Badge>
+                        <Link to={"/login"}>
+                            <IconButton aria-label="Add" style={{
+                                fontFamily: 'Open Sans',
+                                background: "#FF4500",
+                                marginLeft: 10,
+                                display: token === null ? undefined : "none"
+                            }}  >
+                                <LoginIcon />
+                            </IconButton>
+                        </Link>
                     </Box>
-                    <Box sx={{ display: isBasket ? 'none' : 'flex', ...commonStyles }}>
-                        <FormControl variant="standard" sx={{ m: 2, minWidth: 200 }}>
-                            <InputLabel id="demo-simple-select-label" style={{ color: 'black', fontWeight: 'bold' }}>Category</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={category}
-                                label="Kategori Seçin"
-                                onChange={event => handleChange(event.target.value)}
-                            >
-                                <MenuItem value={"All"}>All</MenuItem>
-                                <MenuItem value={"men's clothing"}>men's clothing</MenuItem>
-                                <MenuItem value={"jewelery"}>jewelery</MenuItem>
-                                <MenuItem value={"electronics"}>electronics</MenuItem>
-                                <MenuItem value={"women's clothing"}>women's clothing</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <IconButton aria-label="Tune" onClick={() => dispatch(searchCategory(category))}>
-                            <TuneIcon />
-                        </IconButton>
+                    <Box>
+                    <img style={{ width: 60, height: 60, marginTop: "10px"}} src={image1} alt="" />
                     </Box>
+                    <Box sx={{ display: 'flex' }}>
+                        <Link to={"/userpage"}>
+                            <IconButton aria-label="Add" style={{
+                                fontFamily: 'Open Sans',
+                                background: "#FF8300",
+                                marginLeft: 10,
+                                display: token !== null ? undefined : "none"
+                            }}>
+                                <AccountCircleIcon />
+                            </IconButton></Link>
+
+                        <Link to={"/login"}>
+                            <IconButton aria-label="Add" style={{
+                                fontFamily: 'Open Sans',
+                                background: "#FF4500",
+                                marginLeft: 10,
+                                display: token !== null ? undefined : "none"
+                            }} onClick={() => dispatch(logOut())}>
+                                <LogoutIcon />
+                            </IconButton>
+                        </Link>
+                    </Box>
+
                 </Toolbar>
             </AppBar>
-            <Box component="main" sx={{ p: 3 }}>
+            <Box component="main" sx={{ p: 1 }}>
                 <Toolbar />
-                <Routes>
-                    <Route path="/" element={<ProductList />}></Route>
-                </Routes>
+
             </Box>
         </Box>
     )
