@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import {
-    TextField, Container, Box, Paper, Divider, Grid
+    TextField, Box, Paper, Divider, Grid, Container, Typography
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserApi } from '../redux/ProductSlice'
@@ -24,12 +24,17 @@ const UserPage = () => {
 
     return (
         <Box m={2} pt={3}>
+            <Container style={{display: 'flex',justifyContent: 'center' }}>
+                <Typography style={{ fontFamily: 'Open Sans', color: "#DF362D", fontWeight: "bold" }} variant="h4" gutterBottom>
+                    Welcome {userApi?.username} !
+                </Typography>
+            </Container>
             <Grid sx={{ flexGrow: 1 }} container spacing={2}>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" spacing={2}>
-                        <Paper elevation={10} sx={{ padding: "16px", margin: "20px", bgcolor: "#fafafa"}}>
+                        <Paper elevation={10} sx={{ padding: "16px", margin: "20px", bgcolor: "#fafafa" }}>
                             <Root>
-                                <Divider  style={{ color: "#DF362D",fontWeight: "bold"}}>Personal</Divider>
+                                <Divider style={{ color: "#DF362D", fontWeight: "bold" }}>Personal</Divider>
                                 <Grid container direction={"column"} spacing={3}>
                                     <Grid item>
                                         <TextField
@@ -67,9 +72,9 @@ const UserPage = () => {
                                 </Grid>
                             </Root>
                         </Paper>
-                        <Paper elevation={10} sx={{  padding: "16px", margin: "20px" }}>
+                        <Paper elevation={10} sx={{ padding: "16px", margin: "20px" }}>
                             <Root>
-                                <Divider style={{ color: "#DF362D",fontWeight: "bold"}}>Contact</Divider>
+                                <Divider style={{ color: "#DF362D", fontWeight: "bold" }}>Contact</Divider>
                                 <Grid container direction={"column"} spacing={3}>
                                     <Grid item>
                                         <TextField
@@ -94,12 +99,11 @@ const UserPage = () => {
                                         />
                                     </Grid>
                                 </Grid>
-
                             </Root>
                         </Paper>
                         <Paper elevation={10} sx={{ padding: "16px", margin: "20px", bgcolor: "#fafafa" }}>
                             <Root>
-                                <Divider style={{ color: "#DF362D",fontWeight: "bold"}}>Address</Divider>
+                                <Divider style={{ color: "#DF362D", fontWeight: "bold" }}>Address</Divider>
                                 <Grid container direction={"column"} spacing={3}>
                                     <Grid item>
                                         <TextField
@@ -141,8 +145,6 @@ const UserPage = () => {
                 </Grid>
             </Grid>
         </Box>
-
-
     )
 }
 

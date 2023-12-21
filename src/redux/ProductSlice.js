@@ -7,7 +7,6 @@ const initialState = {
   showAlert: false,
   openDetail: null,
   token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
-  tokenStatus: false,
   userApi: localStorage.getItem('userpage') ? JSON.parse(localStorage.getItem('userpage')) : null,
 }
 
@@ -22,7 +21,6 @@ export const getProductApi = createAsyncThunk(
 
   export const loginOperation = createAsyncThunk(
     'gets/loginOperation',
- 
     async ({ name, pass }) => {
       const res = await fetch('https://fakestoreapi.com/auth/login',{
         method:'POST',
@@ -39,15 +37,39 @@ export const getProductApi = createAsyncThunk(
 
   export const getUserApi = createAsyncThunk(
     'gets/getUserApi',
- 
     async (thunkAPI) => {
-      const res = await fetch(`https://fakestoreapi.com/users/${5}`).
-      then(
+      const res = await fetch('https://fakestoreapi.com/users/5').then(
         (data) => data.json()
       )
       return res
     }
   );
+
+  export const logOut = () => (dispatch) => {
+    localStorage.removeItem("token")
+    dispatch(tokenRemove());
+  };
+
+  export const searchCategory = (param) => (dispatch) => {
+    if (param === "All") {
+      dispatch(getProductApi())
+    }
+    else {
+      fetch(`https://fakestoreapi.com/products/categories `)
+        .then(res => res.json())
+        .then(json => {
+          json.map((item) => {
+          if (param === item) {
+            fetch(`https://fakestoreapi.com/products/category/${item} `)
+              .then(res => res.json())
+              .then(json => {
+                json && dispatch(selectCard(json));
+              })
+          }
+        })
+        })
+    }
+  };
 
 export const ProductSlice = createSlice({
   name: 'product',
@@ -127,7 +149,6 @@ export const ProductSlice = createSlice({
         localStorage.setItem('productList', JSON.stringify(state.productList))
       })
       .addCase(loginOperation.fulfilled, (state, action) => {
-        state.tokenStatus = true;
         state.token = action.payload;
         localStorage.setItem('token', JSON.stringify(state.token))
       })
@@ -141,40 +162,8 @@ export const ProductSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(loginOperation.rejected, (state, action) => {
-        state.tokenStatus = false;
-      })
   }
 });
-
-export const searchCategory = (param) => (dispatch) => {
-  if (param === "All") {
-    dispatch(getProductApi())
-  }
-  else {
-    fetch(`https://fakestoreapi.com/products/categories `)
-      .then(res => res.json())
-      .then(json => {
-        {
-          json.map((item) => {
-            if (param === item) {
-              fetch(`https://fakestoreapi.com/products/category/${item} `)
-                .then(res => res.json())
-                .then(json => {
-                  json && dispatch(selectCard(json));
-                })
-            }
-          })
-        }
-      })
-  }
-};
-
-export const logOut = (param) => (dispatch) => {
-  localStorage.removeItem("token")
-  dispatch(tokenRemove());
-};
-
 
 // Action creators are generated for each case reducer function
 export const { addBasket, removeBasket, getProductData, 

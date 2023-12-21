@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { removeBasket, addBasket } from '../redux/ProductSlice'
 import {
-    TableContainer, Paper, TableRow, TableCell, TableBody, Table, Box, Typography, Container
+    TableContainer, Paper, TableRow, TableCell, TableBody, Table, Typography, Container
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
@@ -53,7 +53,9 @@ const BasketList = () => {
                     </TableBody>
                 </Table>
             </TableContainer> : <Container style={{
-                display: 'flex', justifyContent: 'center', flexFlow: "column",
+                display: 'flex', 
+                justifyContent: 'center', 
+                flexFlow: "column",
                 alignItems: "center",
                 position: "absolute",
                 right: "0",
@@ -62,10 +64,9 @@ const BasketList = () => {
                 bottom: "0"
             }}>
                 <img style={{ width: 100, height: 100 }} src={image2} alt="" />
-                <Typography style={{ color: "#DF362D", fontWeight: "bold" }} variant="h4" gutterBottom>
+                <Typography style={{ color: "#DF362D", fontWeight: "bold", fontFamily: 'Open Sans' }} variant="h4" gutterBottom>
                     Basket is Empty!
                 </Typography></Container>}
-
         </div>
     )
 }

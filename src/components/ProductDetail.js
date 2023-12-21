@@ -2,18 +2,18 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
-import React, { useEffect } from "react";
+import React from "react";
 import { addBasket, handleClose } from '../redux/ProductSlice'
 import {
-    Button, Grid, Typography, Dialog, DialogActions, 
-    DialogContent, Rating, DialogTitle, Box, Container
+    Button, Grid, Typography, Dialog, DialogActions,
+    DialogContent, Rating, DialogTitle, Box
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ProductDetail = () => {
     const { openDetail, basket, token } = useSelector(state => state.product);
     const dispatch = useDispatch()
-    
+
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
             padding: theme.spacing(2),
@@ -82,23 +82,27 @@ const ProductDetail = () => {
                 <DialogActions>
                     <Typography gutterBottom variant="h6" component="div" style={{ color: "#DF362D", marginRight: '5px', marginTop: '5px', fontWeight: "bold" }}>
                         {openDetail?.price} ₺
-                    </Typography> |
-                    <Button style={{ display: token === null ? 'none' : undefined,
-                    fontFamily: 'Open Sans', background: "#DF362D", marginLeft: "5px" }} size="small" variant="contained" autoFocus 
-                    onClick={() => {
-                        dispatch(addBasket(openDetail ?? null));
-                        dispatch(handleClose());
-                    }}> Add to Basket
+                    </Typography>
+                    <Button style={{
+                        display: token === null ? 'none' : undefined,
+                        fontFamily: 'Open Sans', background: "#DF362D", marginLeft: "5px"
+                    }} size="small" variant="contained" autoFocus
+                        onClick={() => {
+                            dispatch(addBasket(openDetail ?? null));
+                            dispatch(handleClose());
+                        }}> Add to Basket
                     </Button>
                 </DialogActions>
                 <div style={{ display: "flex", justifyContent: "flex-end", marginRight: '5px', marginBottom: '5px' }}>
-                    Stock Count: {openDetail?.rating.count} 
+                    Stock Count: {openDetail?.rating.count}
                     {basket?.map((basketList, indexBasket) => {
-                         if(basketList.id === openDetail?.id) {
-                            return (<div key={indexBasket} style={{ marginLeft: "5px" }}> | Basket Count: {basketList.quantity}</div>)
-                         }
-                         else return;
-                        })}
+                        if (basketList.id === openDetail?.id) {
+                            return (<div key={indexBasket}
+                                style={{ display: token === null ? 'none' : undefined, marginLeft: "5px" }}>
+                                | Basket Count: {basketList.quantity}</div>)
+                        }
+                        else return;
+                    })}
                 </div>
             </BootstrapDialog>
         </div>

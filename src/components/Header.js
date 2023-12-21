@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import Badge from '@mui/material/Badge';
-import {
-    AppBar, Toolbar, Box
-} from '@mui/material';
+import { AppBar, Toolbar, Box} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux'
 import { logOut } from '../redux/ProductSlice'
 import CssBaseline from '@mui/material/CssBaseline';
@@ -30,8 +28,8 @@ const Header = () => {
                 <Toolbar style={{ justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex' }}>
                         <Link to={"/products"}>
-                            <IconButton aria-label="Add" style={{
-                                fontFamily: 'Open Sans',
+                            <IconButton aria-label="Add" 
+                            style={{
                                 background: "#FF8300",
                             }}  >
                                 <CategoryIcon />
@@ -40,19 +38,16 @@ const Header = () => {
                         <Badge style={{ display: token !== null ? undefined : "none" }} badgeContent={totalQuantity} color="primary">
                             <Link to={"/basket"}>
                                 <IconButton aria-label="Add" style={{
-                                    fontFamily: 'Open Sans',
                                     marginLeft: 10,
                                     background: "#FF4500",
                                     display: token === null ? 'none' : undefined
                                 }}  >
                                     <ShoppingCartIcon />
                                 </IconButton>
-
                             </Link>
                         </Badge>
                         <Link to={"/login"}>
                             <IconButton aria-label="Add" style={{
-                                fontFamily: 'Open Sans',
                                 background: "#FF4500",
                                 marginLeft: 10,
                                 display: token === null ? undefined : "none"
@@ -67,17 +62,14 @@ const Header = () => {
                     <Box sx={{ display: 'flex' }}>
                         <Link to={"/userpage"}>
                             <IconButton aria-label="Add" style={{
-                                fontFamily: 'Open Sans',
                                 background: "#FF8300",
                                 marginLeft: 10,
                                 display: token !== null ? undefined : "none"
                             }}>
                                 <AccountCircleIcon />
                             </IconButton></Link>
-
                         <Link to={"/login"}>
                             <IconButton aria-label="Add" style={{
-                                fontFamily: 'Open Sans',
                                 background: "#FF4500",
                                 marginLeft: 10,
                                 display: token !== null ? undefined : "none"
@@ -86,12 +78,10 @@ const Header = () => {
                             </IconButton>
                         </Link>
                     </Box>
-
                 </Toolbar>
             </AppBar>
             <Box component="main" sx={{ p: 1 }}>
                 <Toolbar />
-
             </Box>
         </Box>
     )
